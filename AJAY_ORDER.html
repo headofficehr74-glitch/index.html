@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ajay Brand – Order Form</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8f0f5;color:#1a1a1a;min-height:100vh;}
+
+nav{background:#8B3A62;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{color:#fff;font-size:18px;font-weight:700;line-height:1.3;}
+.nav-logo span{font-size:12px;font-weight:400;opacity:.8;display:block;}
+
+.container{max-width:880px;margin:28px auto;padding:0 16px 60px;}
+
+.card{background:#fff;border-radius:16px;border:1px solid #e5d0de;padding:24px 28px;margin-bottom:20px;}
+.card-title{font-size:18px;font-weight:700;color:#8B3A62;margin-bottom:4px;}
+.card-sub{font-size:13px;color:#888;margin-bottom:20px;}
+
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field.full{grid-column:1/-1;}
+.field label{font-size:12px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.4px;}
+.field input,.field select,.field textarea{
+  padding:10px 14px;border:1.5px solid #e0c8d8;border-radius:8px;
+  font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#8B3A62;}
+
+/* DESIGN DROPDOWN */
+.design-select-wrap{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.design-select-wrap label{font-size:13px;font-weight:700;color:#555;white-space:nowrap;}
+.design-dropdown{
+  padding:10px 18px;border:2px solid #8B3A62;border-radius:10px;
+  font-size:15px;font-weight:700;color:#8B3A62;background:#fff;
+  cursor:pointer;min-width:220px;font-family:inherit;
+}
+.design-dropdown:focus{outline:none;box-shadow:0 0 0 3px rgba(139,58,98,.15);}
+.design-badge{background:#f3d0e5;color:#7a2255;font-size:14px;font-weight:700;padding:7px 18px;border-radius:20px;}
+
+.colors-label{font-size:13px;font-weight:600;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+.select-btns{display:flex;gap:8px;margin-bottom:12px;}
+.sel-btn{padding:6px 14px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;border:1.5px solid #8B3A62;}
+.sel-all{background:#8B3A62;color:#fff;}
+.sel-none{background:#fff;color:#8B3A62;}
+
+.colors-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;}
+.color-item{display:flex;align-items:center;gap:7px;cursor:pointer;padding:6px 8px;border-radius:8px;border:1.5px solid #e8d8e8;transition:all .15s;}
+.color-item:hover{border-color:#8B3A62;background:#fdf0f8;}
+.color-item.selected{border-color:#8B3A62;background:#fdf0f8;}
+.color-item input[type=checkbox]{display:none;}
+.color-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,0,0,.15);flex-shrink:0;}
+.color-name{font-size:12px;font-weight:500;color:#444;}
+
+.size-label{font-size:13px;font-weight:600;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+.size-table{width:100%;border-collapse:collapse;}
+.size-table th{background:#f8f0f5;padding:10px 14px;font-size:13px;font-weight:600;color:#8B3A62;text-align:center;border:1px solid #e8d8e8;}
+.size-table th:first-child{text-align:left;}
+.size-table td{padding:10px 14px;border:1px solid #eee;text-align:center;font-size:14px;}
+.size-table td:first-child{font-weight:600;color:#555;text-align:left;background:#fdf9fc;}
+.size-table input[type=number]{width:75px;padding:6px 8px;border:1.5px solid #e0c8d8;border-radius:6px;font-size:14px;text-align:center;font-family:inherit;}
+.size-table input[type=number]:focus{outline:none;border-color:#8B3A62;}
+.size-table .total-cell{font-weight:700;color:#8B3A62;font-size:15px;}
+.size-table tfoot td{background:#f8f0f5;font-weight:700;}
+
+.summary-box{background:#f8f0f5;border-radius:12px;padding:16px 20px;margin-bottom:20px;}
+.summary-row{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px solid #eee;}
+.summary-row.total{font-weight:700;font-size:16px;color:#8B3A62;border-top:2px solid #e0c8d8;border-bottom:none;margin-top:8px;padding-top:10px;}
+
+.submit-area{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-wa{background:#25D366;color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
+.btn-wa:hover{opacity:.9;}
+.btn-reset{background:#fff;color:#8B3A62;border:2px solid #8B3A62;padding:14px 24px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;}
+
+#toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:13px 26px;border-radius:10px;font-size:14px;z-index:999;}
+.wa-float{position:fixed;bottom:24px;right:20px;background:#25D366;color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 16px rgba(0,0,0,.2);text-decoration:none;z-index:100;}
+
+.no-design{text-align:center;padding:40px;color:#aaa;font-size:15px;}
+
+@media(max-width:640px){
+  .colors-grid{grid-template-columns:repeat(3,1fr);}
+  .fields-grid{grid-template-columns:1fr;}
+  .field.full{grid-column:1;}
+  .size-table input[type=number]{width:55px;}
+  .card{padding:16px;}
+  .design-select-wrap{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Ajay Brand Haryana Bangle House <span>Firozabad | +91 9520988082</span></div>
+</nav>
+
+<div class="container">
+
+  <!-- CUSTOMER INFO -->
+  <div class="card">
+    <div class="card-title">Customer Details</div>
+    <div class="card-sub">Pehle apni details bharo</div>
+    <div class="fields-grid">
+      <div class="field"><label>Aapka Naam *</label><input type="text" id="cust-name" placeholder="Jaise: Ramesh Gupta"/></div>
+      <div class="field"><label>Shop / Business Name</label><input type="text" id="cust-shop" placeholder="Jaise: Gupta Bangles"/></div>
+      <div class="field"><label>WhatsApp Number *</label><input type="tel" id="cust-phone" placeholder="+91 XXXXXXXXXX"/></div>
+      <div class="field"><label>City &amp; State *</label><input type="text" id="cust-city" placeholder="Jaise: Delhi"/></div>
+      <div class="field full"><label>Extra Note (optional)</label><textarea id="cust-note" rows="2" placeholder="Koi khaas requirement..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- ORDER SECTION -->
+  <div class="card">
+    <div class="card-title">Order Details</div>
+    <div class="card-sub">Design select karo, phir colors aur sizes bharo</div>
+
+    <!-- DESIGN DROPDOWN -->
+    <div class="design-select-wrap">
+      <label>Design Chuniye:</label>
+      <select class="design-dropdown" id="designSelect" onchange="onDesignChange()">
+        <option value="">-- Design Select Karo --</option>
+        <option value="DIYABATI">🪔 Diyabati</option>
+        <option value="DESIGN2">💎 Design 2 (aane wala)</option>
+        <option value="DESIGN3">✨ Design 3 (aane wala)</option>
+      </select>
+      <div class="design-badge" id="designBadge" style="display:none;"></div>
+    </div>
+
+    <!-- ORDER FORM (hidden until design selected) -->
+    <div id="orderForm" style="display:none;">
+
+      <!-- COLORS -->
+      <div class="colors-label">Colors Select Karo</div>
+      <div class="select-btns">
+        <button class="sel-btn sel-all" onclick="selectAll()">✓ Sabhi Select</button>
+        <button class="sel-btn sel-none" onclick="selectNone()">✗ Clear</button>
+      </div>
+      <div class="colors-grid" id="colorsGrid"></div>
+
+      <!-- SIZE TABLE -->
+      <div class="size-label">Har Color ke liye Size-wise Quantity Likho</div>
+      <div style="overflow-x:auto;">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Color</th>
+              <th>Size 2-2</th>
+              <th>Size 2-4</th>
+              <th>Size 2-6</th>
+              <th>Size 2-8</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="sizeTableBody"></tbody>
+          <tfoot>
+            <tr>
+              <td style="color:#8B3A62;font-weight:700;">GRAND TOTAL</td>
+              <td class="total-cell" id="gt22">0</td>
+              <td class="total-cell" id="gt24">0</td>
+              <td class="total-cell" id="gt26">0</td>
+              <td class="total-cell" id="gt28">0</td>
+              <td class="total-cell" id="gtAll">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="no-design" id="noDesign">&#8593; Pehle upar se design select karo</div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-box" id="summaryBox" style="display:none;">
+    <div style="font-size:15px;font-weight:700;color:#8B3A62;margin-bottom:10px;">📋 Order Summary</div>
+    <div id="summaryContent"></div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area" id="submitArea" style="display:none;">
+    <button class="btn-wa" onclick="submitOrder()">📱 WhatsApp Pe Bhejo</button>
+    <button class="btn-reset" onclick="resetForm()">Reset</button>
+  </div>
+
+</div>
+
+<a class="wa-float" href="https://wa.me/919520988082" target="_blank">💬</a>
+<div id="toast"></div>
+
+<script>
+const COLORS = [
+  {name:'Red',       hex:'#E53935'},
+  {name:'Mehroon',   hex:'#880E4F'},
+  {name:'Peela',     hex:'#FDD835'},
+  {name:'Blue',      hex:'#1E88E5'},
+  {name:'Navy Blue', hex:'#1A237E'},
+  {name:'Pink',      hex:'#E91E8C'},
+  {name:'Baby Pink', hex:'#F8BBD0'},
+  {name:'Peacock',   hex:'#00838F'},
+  {name:'Rani',      hex:'#C2185B'},
+  {name:'Strawberry',hex:'#C62828'},
+  {name:'Kala',      hex:'#212121'},
+  {name:'Hara',      hex:'#2E7D32'},
+  {name:'Kaiya',     hex:'#795548'},
+  {name:'Safed',     hex:'#F5F5F5'},
+  {name:'Purple',    hex:'#6A1B9A'},
+  {name:'Pepsi',     hex:'#283593'},
+  {name:'Pyazi',     hex:'#AD1457'},
+  {name:'Sentro',    hex:'#00695C'},
+  {name:'Cream',     hex:'#FFF8E1'},
+  {name:'Fakhta',    hex:'#A1887F'},
+  {name:'Golden',    hex:'#FFB300'},
+  {name:'Silver',    hex:'#90A4AE'},
+  {name:'Orange',    hex:'#E65100'},
+  {name:'Peech',     hex:'#FFAB91'},
+  {name:'Gazri',     hex:'#FF7043'},
+];
+
+const SIZES = ['2-2','2-4','2-6','2-8'];
+const selected = new Set();
+let currentDesign = '';
+
+// Build color grid once
+const grid = document.getElementById('colorsGrid');
+COLORS.forEach(function(c){
+  const item = document.createElement('label');
+  item.className = 'color-item';
+  const lightColors = ['Safed','Cream','Baby Pink','Peech'];
+  const border = lightColors.indexOf(c.name)>=0 ? 'border:2px solid #ccc;' : '';
+  item.innerHTML =
+    '<input type="checkbox" value="'+c.name+'" onchange="toggleColor(this)">'+
+    '<div class="color-dot" style="background:'+c.hex+';'+border+'"></div>'+
+    '<span class="color-name">'+c.name+'</span>';
+  grid.appendChild(item);
+});
+
+function onDesignChange(){
+  const sel = document.getElementById('designSelect');
+  currentDesign = sel.value;
+  const badge = document.getElementById('designBadge');
+  const form  = document.getElementById('orderForm');
+  const noD   = document.getElementById('noDesign');
+  const subA  = document.getElementById('submitArea');
+
+  if(currentDesign){
+    const opt = sel.options[sel.selectedIndex];
+    badge.textContent = opt.text;
+    badge.style.display = 'inline-block';
+    form.style.display = 'block';
+    noD.style.display  = 'none';
+    subA.style.display = 'flex';
+    selectNone();
+  } else {
+    badge.style.display = 'none';
+    form.style.display  = 'none';
+    noD.style.display   = 'block';
+    subA.style.display  = 'none';
+    document.getElementById('summaryBox').style.display = 'none';
+  }
+}
+
+function toggleColor(cb){
+  const item = cb.closest('.color-item');
+  if(cb.checked){ selected.add(cb.value); item.classList.add('selected'); }
+  else { selected.delete(cb.value); item.classList.remove('selected'); }
+  buildTable();
+}
+
+function selectAll(){
+  document.querySelectorAll('#colorsGrid input[type=checkbox]').forEach(function(cb){
+    cb.checked=true; selected.add(cb.value); cb.closest('.color-item').classList.add('selected');
+  });
+  buildTable();
+}
+function selectNone(){
+  document.querySelectorAll('#colorsGrid input[type=checkbox]').forEach(function(cb){
+    cb.checked=false; cb.closest('.color-item').classList.remove('selected');
+  });
+  selected.clear();
+  buildTable();
+}
+
+function buildTable(){
+  const tbody = document.getElementById('sizeTableBody');
+  const arr = Array.from(selected);
+  tbody.innerHTML='';
+  arr.forEach(function(color){
+    const tr = document.createElement('tr');
+    let cells = '<td>'+color+'</td>';
+    SIZES.forEach(function(sz){
+      cells += '<td><input type="number" min="0" value="" placeholder="0" id="qty_'+color.replace(/\s/g,'_')+'_'+sz+'" oninput="updateTotals()"/></td>';
+    });
+    cells += '<td class="total-cell" id="row_'+color.replace(/\s/g,'_')+'">0</td>';
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
+  });
+  updateTotals();
+}
+
+function updateTotals(){
+  const arr = Array.from(selected);
+  let gt={'2-2':0,'2-4':0,'2-6':0,'2-8':0}, grandAll=0;
+  arr.forEach(function(color){
+    let rowTotal=0;
+    SIZES.forEach(function(sz){
+      const el=document.getElementById('qty_'+color.replace(/\s/g,'_')+'_'+sz);
+      const v=el?parseInt(el.value)||0:0;
+      gt[sz]+=v; rowTotal+=v; grandAll+=v;
+    });
+    const rEl=document.getElementById('row_'+color.replace(/\s/g,'_'));
+    if(rEl) rEl.textContent=rowTotal;
+  });
+  document.getElementById('gt22').textContent=gt['2-2'];
+  document.getElementById('gt24').textContent=gt['2-4'];
+  document.getElementById('gt26').textContent=gt['2-6'];
+  document.getElementById('gt28').textContent=gt['2-8'];
+  document.getElementById('gtAll').textContent=grandAll;
+  buildSummary(arr);
+}
+
+function buildSummary(arr){
+  const box=document.getElementById('summaryBox');
+  const content=document.getElementById('summaryContent');
+  let hasData=false, html='';
+  arr.forEach(function(color){
+    let parts=[], rowT=0;
+    SIZES.forEach(function(sz){
+      const el=document.getElementById('qty_'+color.replace(/\s/g,'_')+'_'+sz);
+      const v=el?parseInt(el.value)||0:0;
+      if(v>0){parts.push(sz+': <b>'+v+'</b>'); rowT+=v;}
+    });
+    if(parts.length){ hasData=true; html+='<div class="summary-row"><span>'+color+'</span><span>'+parts.join(' | ')+' &nbsp;= '+rowT+'</span></div>'; }
+  });
+  const grand=parseInt(document.getElementById('gtAll').textContent)||0;
+  if(hasData){
+    html+='<div class="summary-row total"><span>Total Pieces</span><span>'+grand+'</span></div>';
+    content.innerHTML=html; box.style.display='block';
+  } else { box.style.display='none'; }
+}
+
+function submitOrder(){
+  const name  = document.getElementById('cust-name').value.trim();
+  const phone = document.getElementById('cust-phone').value.trim();
+  const city  = document.getElementById('cust-city').value.trim();
+  if(!name||!phone||!city){ alert('Kripya Naam, WhatsApp Number aur City zaroor bharo!'); return; }
+  const grand = parseInt(document.getElementById('gtAll').textContent)||0;
+  if(grand<20){ alert('Minimum 20 pieces ka order hona chahiye!'); return; }
+
+  const arr=Array.from(selected);
+  const sel=document.getElementById('designSelect');
+  const designName=sel.options[sel.selectedIndex].text;
+
+  let lines=[];
+  lines.push('*ORDER - AJAY BRAND HARYANA BANGLE HOUSE*');
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push('*Customer Details*');
+  lines.push('Naam: '+name);
+  lines.push('Shop: '+(document.getElementById('cust-shop').value.trim()||'-'));
+  lines.push('Phone: '+phone);
+  lines.push('City: '+city);
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push('*Design: '+designName+'*');
+  lines.push('');
+  lines.push('COLOR        | 2-2 | 2-4 | 2-6 | 2-8 | TOTAL');
+  lines.push('─────────────────────────────────────────────');
+
+  let colT={'2-2':0,'2-4':0,'2-6':0,'2-8':0};
+  arr.forEach(function(color){
+    let rowT=0, vals={};
+    SIZES.forEach(function(sz){
+      const el=document.getElementById('qty_'+color.replace(/\s/g,'_')+'_'+sz);
+      const v=el?parseInt(el.value)||0:0;
+      vals[sz]=v; rowT+=v; colT[sz]+=v;
+    });
+    if(rowT>0){
+      const p=function(s,n){s=String(s);while(s.length<n)s+=' ';return s;};
+      lines.push(p(color,13)+'| '+p(vals['2-2'],4)+'| '+p(vals['2-4'],4)+'| '+p(vals['2-6'],4)+'| '+p(vals['2-8'],4)+'| '+rowT);
+    }
+  });
+  lines.push('─────────────────────────────────────────────');
+  lines.push('TOTAL        | '+colT['2-2']+'   | '+colT['2-4']+'   | '+colT['2-6']+'   | '+colT['2-8']+'   | '+grand);
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━');
+  const note=document.getElementById('cust-note').value.trim();
+  if(note) lines.push('Note: '+note);
+  lines.push('*Total Pieces: '+grand+'*');
+  lines.push('');
+  lines.push('Ajay Brand Haryana Bangle House');
+  lines.push('+91 9520988082 | Firozabad');
+
+  window.open('https://wa.me/919520988082?text='+encodeURIComponent(lines.join('\n')),'_blank');
+
+  const t=document.getElementById('toast');
+  t.textContent='✓ WhatsApp khul raha hai order ke saath!';
+  t.style.display='block';
+  setTimeout(function(){t.style.display='none';},4000);
+}
+
+function resetForm(){
+  if(!confirm('Form reset karna chahte ho?')) return;
+  ['cust-name','cust-shop','cust-phone','cust-city','cust-note'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('designSelect').value='';
+  onDesignChange();
+}
+</script>
+</body>
+</html>
